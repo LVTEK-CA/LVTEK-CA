@@ -31,11 +31,13 @@ jobs:
 
       - name: Update gh-pages
         if: ${{ success() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages:gh-pages || git checkout -b gh-pages
           
           git checkout gh-pages
-          git merge main --no-edit
-          git push origin gh-pages
+          git merge main --allow-unrelated-histories -X theirs --no-edit
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git gh-pages
