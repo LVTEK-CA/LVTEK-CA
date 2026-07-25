@@ -37,5 +37,5 @@ jobs:
           git fetch origin gh-pages:gh-pages || git checkout -b gh-pages
           
           git checkout gh-pages
-          git merge main --allow-unrelated-histories --no-edit
+          git merge main --allow-unrelated-histories -X theirs --no-edit
           git push origin gh-pages
