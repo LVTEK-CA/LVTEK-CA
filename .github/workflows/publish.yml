@@ -1,0 +1,41 @@
+name: Update gh-pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  update-gh-pages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Build
+        run: |
+          # Add commands to build your project
+          # For example, npm install && npm run build
+
+      - name: Check if build was successful
+        id: check_build
+        run: |
+          # Add commands to check if the build was successful
+          # For example, use exit codes or check for specific files
+
+      - name: Update gh-pages
+        if: ${{ success() }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages:gh-pages || git checkout -b gh-pages
+          
+          git checkout gh-pages
+          git merge main --no-edit
+          git push origin gh-pages
