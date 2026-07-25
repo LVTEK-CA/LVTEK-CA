@@ -14,30 +14,21 @@ jobs:
 
     steps:
       - name: Checkout main branch
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
+          node-version: 24
+          cache: 'npm'
 
-      - name: Build
+      - name: Install and Build React App
         run: |
-          # Add commands to build your project
-          # For example, npm install && npm run build
+          npm ci
+          npm run build
 
-      - name: Check if build was successful
-        id: check_build
-        run: |
-          # Add commands to check if the build was successful
-          # For example, use exit codes or check for specific files
-
-      - name: Update gh-pages
-        if: ${{ success() }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin gh-pages:gh-pages || git checkout -b gh-pages
-          
-          git checkout gh-pages
-          git merge main --allow-unrelated-histories -X theirs --no-edit
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git gh-pages
+      - name: Deploy to GitHub Pages Branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
