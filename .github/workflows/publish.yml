@@ -16,7 +16,7 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v7
         with:
-          ref: main
+          fetch-depth: 0
 
       - name: Build
         run: |
@@ -32,6 +32,10 @@ jobs:
       - name: Update gh-pages
         if: ${{ success() }}
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages:gh-pages || git checkout -b gh-pages
+          
           git checkout gh-pages
-          git merge main
+          git merge main --no-edit
           git push origin gh-pages
